@@ -253,18 +253,18 @@ section h3 {
 }
 
 .difficulty-badge.beginner {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--success-light);
+  color: var(--success);
 }
 
 .difficulty-badge.intermediate {
-  background: #fff3e0;
-  color: #e65100;
+  background: var(--warning-light);
+  color: var(--warning);
 }
 
 .difficulty-badge.advanced {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--error-light);
+  color: var(--error);
 }
 
 /* Capacity Indicator */
