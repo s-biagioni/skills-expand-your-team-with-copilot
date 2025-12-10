@@ -506,11 +506,29 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
         
       case 'copy':
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          showMessage('Link copied to clipboard!', 'success');
-        }).catch(() => {
-          showMessage('Failed to copy link', 'error');
-        });
+        // Try modern clipboard API first
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            showMessage('Link copied to clipboard!', 'success');
+          }).catch(() => {
+            showMessage('Failed to copy link', 'error');
+          });
+        } else {
+          // Fallback for older browsers or non-HTTPS contexts
+          try {
+            const textArea = document.createElement('textarea');
+            textArea.value = shareUrl;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showMessage('Link copied to clipboard!', 'success');
+          } catch (err) {
+            showMessage('Failed to copy link', 'error');
+          }
+        }
         break;
     }
   }
@@ -566,19 +584,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const shareButtonsHtml = `
       <div class="share-buttons">
         <span class="share-label">Share:</span>
-        <button class="share-btn share-twitter tooltip" data-activity="${name}" title="Share on Twitter">
+        <button class="share-btn share-twitter tooltip" data-activity="${name}" title="Share on Twitter" aria-label="Share ${name} on Twitter">
           <span class="share-icon">𝕏</span>
           <span class="tooltip-text">Share on Twitter</span>
         </button>
-        <button class="share-btn share-facebook tooltip" data-activity="${name}" title="Share on Facebook">
+        <button class="share-btn share-facebook tooltip" data-activity="${name}" title="Share on Facebook" aria-label="Share ${name} on Facebook">
           <span class="share-icon">f</span>
           <span class="tooltip-text">Share on Facebook</span>
         </button>
-        <button class="share-btn share-email tooltip" data-activity="${name}" title="Share via Email">
+        <button class="share-btn share-email tooltip" data-activity="${name}" title="Share via Email" aria-label="Share ${name} via Email">
           <span class="share-icon">✉</span>
           <span class="tooltip-text">Share via Email</span>
         </button>
-        <button class="share-btn share-copy tooltip" data-activity="${name}" title="Copy Link">
+        <button class="share-btn share-copy tooltip" data-activity="${name}" title="Copy Link" aria-label="Copy link to ${name}">
           <span class="share-icon">🔗</span>
           <span class="tooltip-text">Copy Link</span>
         </button>
